@@ -7,39 +7,48 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r76/three.js"></script>
     </head>
     <body>
+        <h1>Hola mundo</h1>
+        <button>Send data</button>
         <script>
-            var socket = io.connect();
-            /* Set up scene */
             var scene = new THREE.Scene();
             var camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
 
             var renderer = new THREE.WebGLRenderer({alpha:true});
+
+            var socket = io.connect();
             renderer.setSize( window.innerWidth, window.innerHeight );
             document.body.appendChild(renderer.domElement);
 
-            /* Create cube */
             var geometry = new THREE.CubeGeometry(4,1.5,.2,10,10,10);
-            //var geometry = new THREE.CubeGeometry(1,1,1,40,40,40);
-            var material = new THREE.MeshBasicMaterial({color:0xD9F57E, wireframe:true});
+            var material = new THREE.MeshBasicMaterial({color:0xD9F57E});
             var cube = new THREE.Mesh(geometry, material);
             scene.add(cube);
 
             camera.position.z = 5;
 
-            function render() {
+            function render(){
                 requestAnimationFrame(render);
                 renderer.render(scene, camera);
-            	//cube.rotation.x += .01;
-            	//cube.rotation.y += .01;
+                // cube.rotation.x += .1;
+                // cube.rotation.y += .1;
                 socket.on('sendCoords', function(data){
-                    //console.log(data);
-            		cube.rotation.z = (data.alpha * Math.PI)/180;
-            		cube.rotation.y = (data.beta * Math.PI)/180;
-            		cube.rotation.x = (data.gamma * Math.PI)/180;
+                    cube.rotation.z = (data.alpha * Math.PI)/180;
+                    cube.rotation.y = (data.beta * Math.PI)/180;
+                    cube.rotation.x = (data.gamma * Math.PI)/180;
                 });
             }
             render();
 
+
+            socket.on('fooBarEvent', function(data){
+                console.log(data);
+            });
+
+            document.querySelector('button').onclick = function(){
+                socket.emit('sendClientData', {
+                    'message' : 'Hello from the browser!'
+                });
+            }
         </script>
     </body>
 </html>
