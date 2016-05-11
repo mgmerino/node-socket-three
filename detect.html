@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Socket.io</title>
+        <script src="socket.io/socket.io.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r76/three.js"></script>
+    </head>
+    <body>
+        <script>
+        var socket = io.connect();
+        function handleOrientation(event) {
+        	var orientation = {alpha: Math.round(event.alpha), beta: Math.round(event.beta), gamma: Math.round(event.gamma)};
+            socket.emit('sendDeviceOrientation', orientation);
+        }
+        window.addEventListener("deviceorientation", handleOrientation);
+
+        </script>
+    </body>
+</html>
